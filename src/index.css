@@ -188,3 +188,10 @@ body {
 
 /* App wrapper */
 .lp-app { min-height: 100vh; }
+
+.lp-logo {
+  height: 28px;    
+  width: auto;   
+  display: block;  
+  object-fit: contain;
+}

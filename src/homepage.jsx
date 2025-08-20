@@ -7,6 +7,7 @@ export default function LandingPage() {
   const procesoRef = useRef(null);
   const beneficiosRef = useRef(null);
   const contactoRef = useRef(null);
+  const testimoniosRef = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
 
   const items = [
@@ -14,6 +15,7 @@ export default function LandingPage() {
     { label: "Qué es", ref: queEsRef },
     { label: "Proceso", ref: procesoRef },
     { label: "Beneficios", ref: beneficiosRef },
+    { label: "Testimonios", ref: testimoniosRef },
     { label: "Contacto", ref: contactoRef },
   ];
 
@@ -132,6 +134,12 @@ export default function LandingPage() {
             <li>Calce perfecto y materiales de alto rendimiento.</li>
             <li>Integración con tu rutina de entrenamiento.</li>
           </ul>
+        </section>
+
+
+        {/* TESTIMONIOS */}
+        <section ref={testimoniosRef} className="lp-section lp-pad">
+          <h2 className="lp-h2">Testimonios</h2>
         </section>
 
         {/* CONTACTO */}
