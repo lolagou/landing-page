@@ -99,7 +99,7 @@ export default function LandingPage() {
 
         {/* ¿QUÉ ES? */}
         <section ref={queEsRef} className="lp-section lp-pad">
-          <h2 className="lp-h2">¿Qué es Trevian?</h2>
+          <h2 className="lp-h2">NUESTRO OBJETIVO</h2>
           <p className="lp-p">
             Trevian utiliza visión 3D e impresión a medida para diseñar plantillas
             personalizadas. El proceso está pensado para optimizar rendimiento y
@@ -139,7 +139,7 @@ export default function LandingPage() {
 
         {/* TESTIMONIOS */}
         <section ref={testimoniosRef} className="lp-section lp-pad">
-          <h2 className="lp-h2">Testimonios</h2>
+          <h2 className="lp-h2">TESTIMONIOS</h2>
         </section>
 
         {/* CONTACTO */}
