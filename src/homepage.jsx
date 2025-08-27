@@ -1,14 +1,31 @@
 import React, { useRef, useState } from "react";
 import logo from "./assets/logo-trevian.png";
+import CoverflowCarousel from "./CoverflowCarousel";
+import "./App.css";
 
 export default function LandingPage() {
+  // Refs de secciones
   const heroRef = useRef(null);
   const queEsRef = useRef(null);
   const procesoRef = useRef(null);
   const beneficiosRef = useRef(null);
   const contactoRef = useRef(null);
   const testimoniosRef = useRef(null);
+
+  // Navbar mobile
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // HERO interactivo
+  const heroBgRef = useRef(null);
+  const handleHeroMove = (e) => {
+    const el = heroBgRef.current;
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    el.style.setProperty("--mx", `${x}%`);
+    el.style.setProperty("--my", `${y}%`);
+  };
 
   const items = [
     { label: "Inicio", ref: heroRef },
@@ -29,12 +46,12 @@ export default function LandingPage() {
       {/* NAVBAR fija */}
       <header className="lp-navbar">
         <div className="lp-nav-inner">
-          {/* poner logo */}
-          <div className="lp-brand">
-      <img src={logo} alt="Logo Trevian" className="lp-logo" />
+          {/* Marca */}
+          <div className="lp-brand" onClick={() => scrollTo(heroRef)} style={{cursor:"pointer"}}>
+            <img src={logo} alt="Logo Trevian" className="lp-logo" />
           </div>
 
-          {/* Centro: Texto + pills (desktop) */}
+          {/* Centro: links de texto (sin pills) */}
           <nav className="lp-nav-center">
             {items.map((it) => (
               <button
@@ -49,7 +66,6 @@ export default function LandingPage() {
 
           {/* Acciones derecha */}
           <div className="lp-nav-right">
-            <button className="lp-avatar" aria-label="Cuenta" />
             <button
               className="lp-burger"
               onClick={() => setMenuOpen((v) => !v)}
@@ -80,9 +96,13 @@ export default function LandingPage() {
 
       {/* CONTENIDO (espacio por navbar fija) */}
       <main className="lp-main">
-        {/* HERO */}
-        <section ref={heroRef} className="lp-section">
-          <div className="lp-hero">
+        {/* HERO oscuro y reactivo */}
+        <section ref={heroRef} className="lp-section lp-hero-sec">
+          <div
+            ref={heroBgRef}
+            className="lp-hero fancy-hero"
+            onMouseMove={handleHeroMove}
+          >
             <div className="lp-hero-center">
               <h1 className="lp-hero-title">Tu plantilla ortopédica, a medida</h1>
               <p className="lp-hero-sub">
@@ -107,27 +127,15 @@ export default function LandingPage() {
           </p>
         </section>
 
-        {/* PROCESO */}
+        {/* PROCESO (Carrusel Coverflow sin flechas ni puntos) */}
         <section ref={procesoRef} className="lp-section lp-pad">
-          <h2 className="lp-h2">¿Cómo funciona?</h2>
-          <div className="lp-grid3">
-            {["Escaneá tu pisada", "Diseño a medida", "Impresión y envío"].map(
-              (t, i) => (
-                <div key={t} className="lp-card">
-                  <div className="lp-step">{i + 1}</div>
-                  <h3 className="lp-h3">{t}</h3>
-                  <p className="lp-card-text">
-                    Descripción breve del paso con foco en claridad y beneficios.
-                  </p>
-                </div>
-              )
-            )}
-          </div>
+          <h2 className="lp-h2">NUESTRA APP</h2>
+          <CoverflowCarousel />
         </section>
 
         {/* BENEFICIOS */}
         <section ref={beneficiosRef} className="lp-section lp-pad">
-          <h2 className="lp-h2">Beneficios</h2>
+          <h2 className="lp-h2">BENEFICIOS</h2>
           <ul className="lp-list">
             <li>Corrección postural y prevención de lesiones.</li>
             <li>Proceso 100% remoto, sin visitas al consultorio.</li>
@@ -136,24 +144,80 @@ export default function LandingPage() {
           </ul>
         </section>
 
+{/* TESTIMONIOS */}
+<section ref={testimoniosRef} className="lp-section lp-pad t-section">
+  <h2 className="lp-h2 t-title">TESTIMONIOS</h2>
 
-        {/* TESTIMONIOS */}
-        <section ref={testimoniosRef} className="lp-section lp-pad">
-          <h2 className="lp-h2">TESTIMONIOS</h2>
-        </section>
+  <div className="t-cards-wrap">
+    {/* Glow turquesa detrás de las cards */}
+    <div className="t-glow" aria-hidden />
+
+    {/* Podés mapear un array si querés */}
+    <article className="t-card">
+      <p className="t-text">
+        Lorem ipsum dolor sit amet consectetur. Turpis lectus tellus diam
+        molestie aliquam nisl. Egestas volutpat imperdiet tristique duis
+        aliquam ut tortor lobortis. Eleifend aliquam integer massa gravida
+        maecenas lacus sit aliquet volutpat. Vestibulum vulputate mi ultricies
+        vitae nulla sem in ullamcorper. Dictum arcu lectus feugiat sit venenatis.
+      </p>
+
+      <div className="t-person">
+        <div className="t-avatar" />
+        <div className="t-id">
+          <div className="t-name">Lucas Bertoloni</div>
+          <div className="t-role">Diseñador UX/UI</div>
+        </div>
+      </div>
+    </article>
+
+    <article className="t-card">
+      <p className="t-text">
+        Lorem ipsum dolor sit amet consectetur. Turpis lectus tellus diam
+        molestie aliquam nisl. Egestas volutpat imperdiet tristique duis
+        aliquam ut tortor lobortis. Eleifend aliquam integer massa gravida
+        maecenas lacus sit aliquet volutpat. Vestibulum vulputate mi ultricies
+        vitae nulla sem in ullamcorper. Dictum arcu lectus feugiat sit venenatis.
+      </p>
+
+      <div className="t-person">
+        <div className="t-avatar" />
+        <div className="t-id">
+          <div className="t-name">Ignacio Núñez</div>
+          <div className="t-role">Diseñador UX/UI</div>
+        </div>
+      </div>
+    </article>
+
+    <article className="t-card">
+      <p className="t-text">
+        Lorem ipsum dolor sit amet consectetur. Turpis lectus tellus diam
+        molestie aliquam nisl. Egestas volutpat imperdiet tristique duis
+        aliquam ut tortor lobortis. Eleifend aliquam integer massa gravida
+        maecenas lacus sit aliquet volutpat. Vestibulum vulputate mi ultricies
+        vitae nulla sem in ullamcorper. Dictum arcu lectus feugiat sit venenatis.
+      </p>
+
+      <div className="t-person">
+        <div className="t-avatar" />
+        <div className="t-id">
+          <div className="t-name">Lola Gouget</div>
+          <div className="t-role">Diseñador UX/UI</div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
 
         {/* CONTACTO */}
         <section ref={contactoRef} className="lp-section lp-pad">
-          <h2 className="lp-h2">Contacto</h2>
+          <h2 className="lp-h2">CONTACTO</h2>
           <div className="lp-form-wrap">
             <form className="lp-form">
               <input className="lp-input" placeholder="Tu nombre" />
               <input className="lp-input" placeholder="Email" />
-              <textarea
-                rows={4}
-                className="lp-input"
-                placeholder="Mensaje"
-              />
+              <textarea rows={4} className="lp-input" placeholder="Mensaje" />
               <button type="button" className="lp-btn-primary lp-wmax">
                 Enviar
               </button>

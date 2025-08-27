@@ -6,5 +6,7 @@ export default function App() {
     <div className="lp-app">
       <LandingPage />
     </div>
+
+    
   );
 }

@@ -48,14 +48,21 @@ body {
 
 .lp-nav-center { display: none; gap: 8px; align-items: center; }
 .lp-texto { color: var(--brand); font-weight: 600; margin-right: 4px; }
+
 .lp-pill {
-  appearance: none; border: none; cursor: pointer;
-  padding: 6px 16px; border-radius: 999px;
-  background: var(--pill-bg); color: var(--pill-text);
-  font-weight: 700; font-size: 14px; box-shadow: 0 1px 3px rgba(0,0,0,.25);
-  transition: transform .15s ease, background .15s ease;
+  background: none;           /* sin fondo */
+  border: none;               /* sin borde */
+  color: #CBFFEF;             /* o #6DFFD5 si querés más contraste */
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 4px 0;             /* sólo espacio vertical */
+  transition: color 0.2s ease;
 }
-.lp-pill:hover { transform: translateY(-1px); background: #fff; }
+
+.lp-pill:hover {
+  color: #6DFFD5;             /* acento al hover */
+}
 
 .lp-nav-right { display: flex; align-items: center; gap: 8px; }
 .lp-avatar {
@@ -194,4 +201,228 @@ body {
   width: auto;   
   display: block;  
   object-fit: contain;
+}
+
+/* Sección hero sin clip para permitir efectos 3D y sombras */
+.lp-hero-sec { overflow: visible; }
+
+/* Contenedor hero “oscuro” con efectos */
+.fancy-hero {
+  --ink: #02001a;
+  --accent: #6DFFD5;
+  --accent-2: #CBFFEF;
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  min-height: clamp(520px, 75vh, 820px);
+  display: grid;
+  place-items: center;
+  padding: 64px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+
+  /* Fondo base: gradiente animado sutil */
+  background:
+    radial-gradient(1200px 1200px at var(--mx) var(--my), rgba(109,255,213,0.10), transparent 40%),
+    radial-gradient(1200px 1200px at calc(100% - var(--mx)) calc(100% - var(--my)), rgba(203,255,239,0.06), transparent 45%),
+    linear-gradient(135deg, #05003F 0%, #02001A 60%, #000014 100%);
+  animation: heroHue 14s ease-in-out infinite alternate;
+  isolation: isolate; /* para pseudo-elements atrás */
+}
+
+/* Glow/Spotlight más intenso cerca del cursor (capa superior suave) */
+.fancy-hero::after {
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(280px 220px at var(--mx) var(--my), rgba(109,255,213,0.18), transparent 55%);
+  mix-blend-mode: screen;
+  transition: background-size .15s ease;
+}
+
+/* Blobs en el fondo (parallax suave) */
+.fancy-hero::before {
+  content: "";
+  position: absolute; inset: -10%;
+  background:
+    radial-gradient(600px 400px at 20% 30%, rgba(109,255,213,0.10), transparent 60%),
+    radial-gradient(500px 380px at 80% 70%, rgba(203,255,239,0.08), transparent 60%),
+    radial-gradient(400px 320px at 50% 85%, rgba(109,255,213,0.06), transparent 65%);
+  filter: blur(20px);
+  transform: translateZ(0);
+  animation: floatBlobs 18s ease-in-out infinite;
+  z-index: -1;
+}
+
+/* Contenido centrado */
+.lp-hero-center {
+  text-align: center;
+  max-width: 880px;
+  transform: translateZ(0);
+}
+
+.lp-hero-title {
+  color: #CBFFEF;
+  font-size: clamp(36px, 6vw, 64px);
+  line-height: 1.05;
+  letter-spacing: 0.2px;
+  margin: 0 0 12px;
+  text-shadow: 0 6px 24px rgba(109,255,213,0.15);
+}
+
+.lp-hero-sub {
+  color: rgba(255,255,255,0.8);
+  font-size: clamp(16px, 2.2vw, 20px);
+  margin: 0 auto 28px;
+}
+
+/* CTA buttons */
+.lp-hero-cta {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.lp-btn-primary,
+.lp-btn-ghost {
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-weight: 600;
+  letter-spacing: .2px;
+  transition: transform .15s ease, box-shadow .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+  will-change: transform;
+}
+
+.lp-btn-primary {
+  background: linear-gradient(180deg, #6DFFD5 0%, #4BE3BE 100%);
+  color: #02001A;
+  border: none;
+  box-shadow: 0 8px 28px rgba(109,255,213,0.35), 0 2px 8px rgba(0,0,0,0.35);
+}
+.lp-btn-primary:hover { transform: translateY(-2px) scale(1.02); }
+
+.lp-btn-ghost {
+  background: transparent;
+  color: #CBFFEF;
+  border: 1px solid rgba(203,255,239,0.45);
+  box-shadow: 0 4px 18px rgba(0,0,0,0.25) inset;
+}
+.lp-btn-ghost:hover {
+  border-color: rgba(109,255,213,0.85);
+  color: #6DFFD5;
+  transform: translateY(-1px);
+}
+
+
+/* ===== Testimonios ===== */
+.t-section { overflow: visible; }
+.t-title { text-align: center; margin-bottom: 28px; }
+
+.t-cards-wrap {
+  position: relative;
+  max-width: 1120px;
+  margin: 0 auto;
+  display: grid;
+  gap: 28px;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 900px) {
+  .t-cards-wrap { grid-template-columns: repeat(3, 1fr); gap: 36px; }
+}
+
+/* Glow debajo de las cards */
+.t-glow {
+  position: absolute;
+  top: 0;              /* empieza desde arriba de las cards */
+  left: 0;
+  right: 0;
+  height: 100%;        /* ocupa toda la altura del bloque de cards */
+  border-radius: 32px; 
+
+  background: linear-gradient(  
+    180deg,
+    #020016 30%,     /* color más claro */
+    #05003F 50%,    /* color medio */
+    #6DFFD5 100%    /* color oscuro */
+  );
+
+  filter: blur(18px);
+  z-index: 0;
+}
+
+/* Card */
+.t-card {
+  position: relative;
+  z-index: 1;
+  background: #ffffff;
+  color: #121212;
+  border-radius: 16px;
+  padding: 22px 24px;
+  min-height: 380px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.18),
+    0 2px 0 rgba(0,0,0,.06) inset;
+}
+
+/* Texto del testimonio */
+.t-text {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #1a1a1a;
+  margin: 0 0 18px;
+}
+
+/* Persona */
+.t-person {
+  display: flex;              /* de grid a flex */
+  flex-direction: column;     /* apila vertical */
+  align-items: center;        /* centra horizontal */
+  margin-top: 26px;
+  text-align: center; 
+}
+
+/* Avatar estilo “aro” */
+.t-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid rgba(7, 13, 40, .6);
+  margin-bottom: 24px; 
+}
+
+/* Nombre y rol */
+.t-id { display: grid; }
+.t-name {
+  font-weight: 700;
+  color: #0c0c0c;
+  margin-bottom: 4px;
+}
+.t-role {
+  font-size: 13px;
+  color: #6b6b6b;
+}
+
+
+
+/* Animaciones */
+@keyframes heroHue {
+  0% { filter: hue-rotate(0deg) saturate(1); }
+  100% { filter: hue-rotate(9deg) saturate(1.05); }
+}
+@keyframes floatBlobs {
+  0%   { transform: translate(0px, 0px) scale(1); }
+  50%  { transform: translate(0px, -10px) scale(1.02); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+  .fancy-hero { padding: 56px 12px; }
+  .lp-hero-cta { gap: 10px; }
 }
