@@ -2,55 +2,129 @@ import React, { useEffect, useRef, useState } from "react";
 import logo from "./assets/logo-trevian.png";
 import "./App.css";
 
-/* === Carrusel simple (Coverflow light, más grande) === */
+import img1 from "./img1.png";
+import img2 from "./img2.png";
+import img3 from "./img3.png";
+import perfil from "./perfil.png";
+import ubicacion from "./ubicacion.png";
+import objetivo from "./objetivo.png";
+
+
+
+/* ===== Carrusel 3D ===== */
 function CoverflowCarousel() {
   const slides = [
     {
-      title: "1. Escaneá tu pisada",
+      title: "1. PROCESO DE ESCANEO",
       desc:
         "Usá la app para tomar fotos y videos de tus pies desde casa. Guías en pantalla garantizan el ángulo correcto.",
     },
     {
-      title: "2. IA que te analiza",
+      title: "2. IA QUE TE ANALIZA",
       desc:
         "Nuestros modelos de ML detectan puntos clave, arco plantar y alineación para diseñar una plantilla única para vos.",
     },
     {
-      title: "3. Impresión 3D",
+      title: "3. IMPRESIÓN 3D",
       desc:
         "Fabricamos tu plantilla e integramos el diseño directamente en una zapatilla deportiva personalizada.",
     },
   ];
 
+  const CFG = { spreadX: 360, depthZ: 210, rotateY: 36, scaleStep: 0.08, maxOffset: 2 };
+
   const [idx, setIdx] = useState(0);
-  const next = () => setIdx((i) => (i + 1) % slides.length);
-  const prev = () => setIdx((i) => (i - 1 + slides.length) % slides.length);
+  const clamp = (i) => (i + slides.length) % slides.length;
+  const next = () => setIdx((i) => clamp(i + 1));
+
+  const [paused, setPaused] = useState(false);
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(next, 4200);
+    return () => clearInterval(id);
+  }, [paused, idx]);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "ArrowRight") next();
+      if (e.key === "ArrowLeft") setIdx((i) => clamp(i - 1));
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   return (
-    <div className="cf-wrap">
-      <button className="cf-nav" onClick={prev} aria-label="Anterior">‹</button>
-      <div className="cf-stage">
+    <div
+      className="cf3d-wrap no-arrows"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div className="cf3d-wing left" aria-hidden />
+      <div className="cf3d-wing right" aria-hidden />
+
+      <div className="cf3d-stage" role="region" aria-roledescription="carrusel 3D">
         {slides.map((s, i) => {
-          const pos = i - idx;
+          let o = i - idx;
+          if (o > CFG.maxOffset) o -= slides.length;
+          if (o < -CFG.maxOffset) o += slides.length;
+
+          const tx = o * CFG.spreadX;
+          const rz = -Math.abs(o) * CFG.depthZ;
+          const ry = -o * CFG.rotateY;    
+          const sc = 1 - Math.abs(o) * CFG.scaleStep;
+
           return (
             <article
               key={s.title}
-              className={`cf-card ${pos === 0 ? "is-center" : pos < 0 ? "is-left" : "is-right"}`}
-              style={{ "--pos": pos }}
+              className="cf3d-card"
+              style={{
+                transform: `translateX(${tx}px) translateZ(${rz}px) rotateY(${ry}deg) scale(${sc})`,
+                zIndex: 10 - Math.abs(o),
+              }}
             >
-              <h3 className="cf-title">{s.title}</h3>
-              <p className="cf-desc">{s.desc}</p>
+              <header className="cf3d-title">{s.title}</header>
+
+              <div className="cf3d-inner">
+                <div className="cf3d-media" aria-label="media del paso" />
+                <p className="cf3d-text">{s.desc}</p>
+              </div>
             </article>
           );
         })}
       </div>
-      <button className="cf-nav" onClick={next} aria-label="Siguiente">›</button>
     </div>
   );
 }
 
+/* ===== Desarrollador ===== */
+function DevCard({ name, role, linkedin, avatar = perfil }) {
+  return (
+    <article className="devx-card">
+      <div
+        className="devx-photo"
+        style={{ backgroundImage: `url(${avatar})` }}
+        aria-label={name}
+      />
+      <div className="devx-info">
+        <h4 className="devx-name">{name}</h4>
+        <p className="devx-role">{role}</p>
+
+        {linkedin && (
+          <a className="devx-link" href={linkedin} target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" className="devx-ln-ico">
+              <path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM.5 8h4V24h-4V8zm7.98 0h3.83v2.18h.05c.53-1 1.84-2.18 3.79-2.18 4.05 0 4.8 2.67 4.8 6.15V24h-4v-7.1c0-1.69-.03-3.87-2.36-3.87-2.36 0-2.72 1.84-2.72 3.75V24h-4V8z"/>
+            </svg>
+            <span className="devx-ln-text">@{name.split(" ")[0].toLowerCase()}</span>
+          </a>
+        )}
+      </div>
+    </article>
+  );
+}
+
+
 export default function LandingPage() {
-  // Refs de secciones
+
   const heroRef = useRef(null);
   const objetivoRef = useRef(null);
   const procesoRef = useRef(null);
@@ -58,30 +132,28 @@ export default function LandingPage() {
   const devsRef = useRef(null);
   const contactoRef = useRef(null);
 
-  // Fondo interactivo del hero
   const heroBgRef = useRef(null);
   const handleHeroMove = (e) => {
     const el = heroBgRef.current;
     if (!el) return;
-    const rect = el.getBoundingClientRect();
-    const x = ((e.clientX - rect.left) / rect.width) * 100;
-    const y = ((e.clientY - rect.top) / rect.height) * 100;
+    const r = el.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * 100;
+    const y = ((e.clientY - r.top) / r.height) * 100;
     el.style.setProperty("--mx", `${x}%`);
     el.style.setProperty("--my", `${y}%`);
   };
 
-  // Cinta solo visible en el HERO
+
   const [showRibbon, setShowRibbon] = useState(true);
   useEffect(() => {
     const ob = new IntersectionObserver(
-      (entries) => setShowRibbon(entries[0]?.isIntersecting ?? false),
+      (ents) => setShowRibbon(!!ents[0]?.isIntersecting),
       { threshold: 0.4 }
     );
     if (heroRef.current) ob.observe(heroRef.current);
     return () => ob.disconnect();
   }, []);
 
-  // Navbar
   const items = [
     { label: "Inicio", ref: heroRef },
     { label: "Nuestro objetivo", ref: objetivoRef },
@@ -92,14 +164,26 @@ export default function LandingPage() {
   ];
   const scrollTo = (ref) => ref?.current?.scrollIntoView({ behavior: "smooth" });
 
+  const team = [
+    { name: "IGNACIO VALCARCE", role: "UX/UI Designer", linkedin: "#" },
+    { name: "LOLA EMMA GOUGET", role: "Front-End Developer", linkedin: "#" },
+    { name: "LUCAS BERTOLONI", role: "Back-End Developer", linkedin: "#" },
+    { name: "MATIAS SZPEKTOR", role: "AI Developer", linkedin: "#" },
+    { name: "MATIAS MAYANS", role: "Material Designer", linkedin: "#" },
+    { name: "LUCAS GARBATE", role: "Algorithm Developer", linkedin: "#" },
+  ];
+
   return (
     <div className="lp-root">
-      {/* NAVBAR centrada */}
+      {/* NAVBAR */}
       <header className="lp-navbar">
         <div className="lp-nav-inner">
-          <div className="lp-brand" onClick={() => scrollTo(heroRef)} role="button">
-            <img src={logo} alt="Logo Trevian" className="lp-logo" />
+          <div className="lp-nav-left">
+            <div className="lp-brand" onClick={() => scrollTo(heroRef)} role="button">
+              <img src={logo} alt="Logo Trevian" className="lp-logo" />
+            </div>
           </div>
+
           <nav className="lp-nav-center">
             {items.map((it) => (
               <button key={it.label} className="lp-pill" onClick={() => scrollTo(it.ref)}>
@@ -107,11 +191,13 @@ export default function LandingPage() {
               </button>
             ))}
           </nav>
+
+          <div className="lp-nav-right" />
         </div>
       </header>
 
       <main className="lp-main">
-        {/* HERO con fondo interactivo + cinta */}
+        {/* HERO */}
         <section ref={heroRef} className="lp-section lp-hero-sec">
           <div
             ref={heroBgRef}
@@ -119,7 +205,7 @@ export default function LandingPage() {
             onMouseMove={handleHeroMove}
           >
             <div className="lp-hero-center">
-              <h1 className="lp-hero-title">Tu plantilla ortopédica, a medida</h1>
+              <h1 className="lp-hero-title">Personalizá tu plantilla ortopédica</h1>
               <p className="lp-hero-sub">
                 Escaneá desde tu casa, nuestra IA diseña tu plantilla 3D y la integramos en una
                 zapatilla deportiva personalizada.
@@ -149,93 +235,169 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* NUESTRO OBJETIVO (foto + texto) */}
+        {/* NUESTRO OBJETIVO */}
         <section ref={objetivoRef} className="lp-section lp-pad objetivo-grid">
           <h2 className="lp-h2 center">NUESTRO OBJETIVO</h2>
 
           <div className="obj-grid">
-            {/* Cuando subas tu foto, agregá style={{backgroundImage:"url('/ruta.jpg')"}} */}
-            <div className="obj-photo" aria-label="Foto objetivo" />
+            
+
+<div
+className="obj-photo obj-photo--square"
+style={{ backgroundImage: `url(${objetivo})` }}
+/>
+
             <div className="obj-text">
               <h3 className="obj-kicker">Rendimiento sin lesiones</h3>
               <p>
                 Democratizar plantillas ortopédicas de alto rendimiento mediante análisis de
-                pisada con IA e impresión 3D, para deportistas como voleibolistas, tenistas y
-                basquetbolistas.
+                pisada con IA e impresión 3D, para voleibolistas, tenistas y basquetbolistas.
               </p>
               <p>
-                Desde imágenes y videos capturados por el usuario o por su kinesiólogo, generamos
-                un modelo 3D personalizado que corrige y optimiza la pisada, mejorando estabilidad,
-                tracción y recuperación.
+                Con imágenes y videos capturados por el usuario o su kinesiólogo, generamos
+                un modelo 3D personalizado que corrige y optimiza la pisada.
               </p>
-              <p>
-                Integración directa en la zapatilla impresa en 3D para que cada paso sea más
-                eficiente.
-              </p>
+              <p>Integración directa en una zapatilla impresa en 3D para máxima eficiencia.</p>
             </div>
           </div>
         </section>
 
-        {/* NUESTRA APP (carrusel 3 pasos) */}
+        {/* NUESTRA APP */}
         <section ref={procesoRef} className="lp-section lp-pad">
           <h2 className="lp-h2 center">NUESTRA APP</h2>
+          <p className="lp-sub center">Conocé la app que te va a facilitar el acceso a tus plantillas</p>
           <CoverflowCarousel />
         </section>
 
-        {/* ASÍ TRABAJAMOS (3 fotos) */}
-        <section ref={trabajamosRef} className="lp-section lp-pad">
-          <h2 className="lp-h2 center">ASÍ TRABAJAMOS</h2>
+        {/* ASÍ TRABAJAMOS */}
+<section ref={trabajamosRef} className="lp-section lp-pad">
+  <h2 className="lp-h2 center">ASÍ TRABAJAMOS</h2>
 
-          <div className="work-grid">
-            <div className="work-big" />
-            <div className="work-small top" />
-            <div className="work-small bottom" />
-          </div>
+  <div className="workcards-grid">
 
-          <p className="work-note">
-            (Luego reemplazá estos placeholders por tus fotos: escaneo, análisis y producción)
-          </p>
-        </section>
+    <article className="workcard">
+      <div
+        className="workcard-img"
+        style={{ backgroundImage: `url(${img1})` }}
+        aria-label="Materiales TPU flexibles"
+      />
+      <h3 className="workcard-title">MATERIALES TPU FLEXIBLES</h3>
+      <p className="workcard-copy">
+        Alta tecnología en materiales aptos para impresión 3D.
+      </p>
+    </article>
+
+
+    <article className="workcard">
+      <div
+        className="workcard-img"
+        style={{ backgroundImage: `url(${img2})` }}
+        aria-label="Entrevistas con especialistas"
+      />
+      <h3 className="workcard-title">ENTREVISTAS CON ESPECIALISTAS</h3>
+      <p className="workcard-copy">
+        Charlas con kinesiólogos, ortopedistas y podólogos para entender mejor
+        los estudios que realizan para analizar la pisada.
+      </p>
+    </article>
+
+    <article className="workcard">
+      <div
+        className="workcard-img"
+        style={{ backgroundImage: `url(${img3})` }}
+        aria-label="Congresos de ortopedia"
+      />
+      <h3 className="workcard-title">CONGRESOS DE ORTOPEDIA</h3>
+      <p className="workcard-copy">
+        Hemos participado en congresos compartiendo experiencias con especialistas.
+      </p>
+    </article>
+  </div>
+</section>
+
 
         {/* DESARROLLADORES */}
-        <section ref={devsRef} className="lp-section lp-pad">
-          <h2 className="lp-h2 center">DESARROLLADORES</h2>
-          <div className="devs-grid">
-            <article className="dev-card">
-              <div className="dev-avatar" />
-              <div>
-                <h3 className="dev-name">Lola Emma Núñez Gouget</h3>
-                <p className="dev-role">Front-end · React Native · Integración Swift/RealityKit</p>
-              </div>
-            </article>
+        <h2 className="lp-h2 center">DESARROLLADORES</h2>
+        <div className="devx-grid">
+  {team.map((m) => (
+    <DevCard key={m.name} {...m} avatar={perfil} />
+  ))}
+</div>
 
-            <article className="dev-card">
-              <div className="dev-avatar" />
-              <div>
-                <h3 className="dev-name">Lucas Bertoloni</h3>
-                <p className="dev-role">Back-end · API · Infra</p>
-              </div>
-            </article>
-
-            <article className="dev-card">
-              <div className="dev-avatar" />
-              <div>
-                <h3 className="dev-name">Ignacio Núñez Valcarce</h3>
-                <p className="dev-role">UX/UI · Diseño de interacción</p>
-              </div>
-            </article>
-          </div>
-        </section>
 
         {/* CONTACTO */}
-        <section ref={contactoRef} className="lp-section lp-pad">
+        <section ref={contactoRef} className="lp-section lp-pad contact-sec">
           <h2 className="lp-h2 center">CONTACTO</h2>
-          <form className="lp-form">
-            <input className="lp-input" placeholder="Tu nombre" />
-            <input className="lp-input" placeholder="Email" />
-            <textarea rows={4} className="lp-input" placeholder="Mensaje" />
-            <button type="button" className="lp-btn-primary lp-wmax">Enviar</button>
-          </form>
+
+          <div className="contact-grid">
+            <div className="contact-left">
+              <p className="contact-copy">
+                Te invitamos a que nos escribas a <a href="mailto:info@trevian.ar">info@trevian.ar</a><br/>
+                ante cualquier duda o consulta.
+              </p>
+              <div className="contact-divider" />
+            </div>
+
+            <form className="contact-form" onSubmit={(e)=>e.preventDefault()}>
+              <label className="f-row">
+                <span>Nombre*</span>
+                <input className="f-input f-underline" required placeholder="Tu nombre" />
+              </label>
+              <label className="f-row">
+                <span>Organización</span>
+                <input className="f-input f-underline" placeholder="Escuela / Empresa" />
+              </label>
+              <label className="f-row">
+                <span>Email*</span>
+                <input type="email" required className="f-input f-underline" placeholder="tu@correo.com" />
+              </label>
+              <label className="f-row">
+                <span>Mensaje</span>
+                <textarea rows={3} className="f-input f-underline" placeholder="Contanos en qué te ayudamos" />
+              </label>
+              <div className="contact-actions">
+                <button className="contact-send" type="submit">ENVIAR</button>
+              </div>
+            </form>
+          </div>
+
+          {/* Footer*/}
+          <div className="footer-topline" />
+          <footer className="site-footer">
+            <div className="foot-brand">
+              <img src={logo} alt="Trevian" className="foot-logo" />
+            </div>
+
+            <div className="foot-col">
+              <h5>MAPA DEL SITIO</h5>
+              <ul>
+                <li><button onClick={()=>scrollTo(objetivoRef)}>Servicios</button></li>
+                <li><button onClick={()=>scrollTo(trabajamosRef)}>Clientes</button></li>
+                <li><button onClick={()=>scrollTo(procesoRef)}>Novedades</button></li>
+                <li><button onClick={()=>scrollTo(devsRef)}>Nosotros</button></li>
+                <li><button onClick={()=>scrollTo(contactoRef)}>Contacto</button></li>
+              </ul>
+            </div>
+
+            <div className="foot-col">
+  <h5>UBICACIÓN</h5>
+  <img className="map-img" src={ubicacion} alt="Ubicación" />
+  <small>Escuela ORT Sede N°2,<br/>Buenos Aires, Argentina</small>
+</div>
+
+            <div className="foot-col redes">
+              <h5>Seguinos en nuestras redes</h5>
+              <div className="socials">
+                <a aria-label="Instagram" href="#"><span className="s-ico">⌾</span></a>
+                <a aria-label="Facebook" href="#"><span className="s-ico">f</span></a>
+                <a aria-label="LinkedIn" href="#"><span className="s-ico">in</span></a>
+              </div>
+            </div>
+          </footer>
+
+          <div className="copyright">
+            Copyright © {new Date().getFullYear()} Trevian – Todos los derechos reservados.
+          </div>
         </section>
       </main>
     </div>
