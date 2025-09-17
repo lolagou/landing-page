@@ -131,6 +131,7 @@ export default function LandingPage() {
   const trabajamosRef = useRef(null);
   const devsRef = useRef(null);
   const contactoRef = useRef(null);
+  const testimoniosRef = useRef(null);
 
   const heroBgRef = useRef(null);
   const handleHeroMove = (e) => {
@@ -311,6 +312,67 @@ style={{ backgroundImage: `url(${objetivo})` }}
       <p className="workcard-copy">
         Hemos participado en congresos compartiendo experiencias con especialistas.
       </p>
+    </article>
+  </div>
+</section>
+
+{/* TESTIMONIOS */}
+<section ref={testimoniosRef} className="lp-section lp-pad t-section">
+  <h2 className="lp-h2 t-title">TESTIMONIOS</h2>
+
+  <div className="t-cards-wrap">
+    {/* Glow turquesa detrás */}
+    <div className="t-glow" aria-hidden />
+
+    <article className="t-card">
+      <p className="t-text">
+        Lorem ipsum dolor sit amet consectetur. Turpis lectus tellus diam
+        molestie aliquam nisl. Egestas volutpat imperdiet tristique duis
+        aliquam ut tortor lobortis. Eleifend aliquam integer massa gravida
+        maecenas lacus sit aliquet volutpat. Vestibulum vulputate mi ultricies
+        vitae nulla sem in ullamcorper. Dictum arcu lectus feugiat sit venenatis.
+      </p>
+      <div className="t-person">
+        <div className="t-avatar" />
+        <div className="t-id">
+          <div className="t-name">Nachito Núñez</div>
+          <div className="t-role">Diseñador UX/UI</div>
+        </div>
+      </div>
+    </article>
+
+    <article className="t-card">
+      <p className="t-text">
+        Lorem ipsum dolor sit amet consectetur. Turpis lectus tellus diam
+        molestie aliquam nisl. Egestas volutpat imperdiet tristique duis
+        aliquam ut tortor lobortis. Eleifend aliquam integer massa gravida
+        maecenas lacus sit aliquet volutpat. Vestibulum vulputate mi ultricies
+        vitae nulla sem in ullamcorper. Dictum arcu lectus feugiat sit venenatis.
+      </p>
+      <div className="t-person">
+        <div className="t-avatar" />
+        <div className="t-id">
+          <div className="t-name">Nachito Núñez</div>
+          <div className="t-role">Diseñador UX/UI</div>
+        </div>
+      </div>
+    </article>
+
+    <article className="t-card">
+      <p className="t-text">
+        Lorem ipsum dolor sit amet consectetur. Turpis lectus tellus diam
+        molestie aliquam nisl. Egestas volutpat imperdiet tristique duis
+        aliquam ut tortor lobortis. Eleifend aliquam integer massa gravida
+        maecenas lacus sit aliquet volutpat. Vestibulum vulputate mi ultricies
+        vitae nulla sem in ullamcorper. Dictum arcu lectus feugiat sit venenatis.
+      </p>
+      <div className="t-person">
+        <div className="t-avatar" />
+        <div className="t-id">
+          <div className="t-name">Nachito Núñez</div>
+          <div className="t-role">Diseñador UX/UI</div>
+        </div>
+      </div>
     </article>
   </div>
 </section>
