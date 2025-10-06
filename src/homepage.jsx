@@ -406,25 +406,24 @@ style={{ backgroundImage: `url(${objetivo})` }}
                 Te invitamos a que nos escribas a <a href="mailto:info@trevian.ar">info@trevian.ar</a><br/>
                 ante cualquier duda o consulta.
               </p>
-              <div className="contact-divider" />
             </div>
 
             <form className="contact-form" onSubmit={(e)=>e.preventDefault()}>
               <label className="f-row">
                 <span>Nombre*</span>
-                <input className="f-input f-underline" required placeholder="Tu nombre" />
+                <input className="f-input f-underline"/>
               </label>
               <label className="f-row">
                 <span>Organización</span>
-                <input className="f-input f-underline" placeholder="Escuela / Empresa" />
+                <input className="f-input f-underline" />
               </label>
               <label className="f-row">
                 <span>Email*</span>
-                <input type="email" required className="f-input f-underline" placeholder="tu@correo.com" />
+                <input type="email" required className="f-input f-underline" />
               </label>
               <label className="f-row">
                 <span>Mensaje</span>
-                <textarea rows={3} className="f-input f-underline" placeholder="Contanos en qué te ayudamos" />
+                <textarea rows={3} className="f-input f-underline" />
               </label>
               <div className="contact-actions">
                 <button className="contact-send" type="submit">ENVIAR</button>
