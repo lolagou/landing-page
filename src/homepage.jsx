@@ -206,7 +206,7 @@ export default function LandingPage() {
             onMouseMove={handleHeroMove}
           >
             <div className="lp-hero-center">
-              <h1 className="lp-hero-title">Personalizá tu plantilla ortopédica</h1>
+              <h1 className="lp-hero-title">TU PLANTILLA ORTOPEDICA, A MEDIDA</h1>
               <p className="lp-hero-sub">
                 Escaneá desde tu casa, nuestra IA diseña tu plantilla 3D y la integramos en una
                 zapatilla deportiva personalizada.
