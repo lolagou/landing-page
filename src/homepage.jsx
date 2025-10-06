@@ -7,7 +7,13 @@ import img2 from "./img2.png";
 import img3 from "./img3.png";
 import perfil from "./perfil.png";
 import ubicacion from "./ubicacion.png";
-import objetivo from "./objetivo.png";
+import objetivo from "./objective.png";
+import perfil1 from "./perfil1.png";
+import perfil2 from "./perfil2.png";
+import perfil3 from "./perfil3.png";
+import perfil4 from "./perfil4.png";
+import perfil5 from "./perfil5.png";
+import perfil6 from "./perfil6.png";
 
 
 
