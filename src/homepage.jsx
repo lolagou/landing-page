@@ -331,51 +331,39 @@ style={{ backgroundImage: `url(${objetivo})` }}
 
     <article className="t-card">
       <p className="t-text">
-        Lorem ipsum dolor sit amet consectetur. Turpis lectus tellus diam
-        molestie aliquam nisl. Egestas volutpat imperdiet tristique duis
-        aliquam ut tortor lobortis. Eleifend aliquam integer massa gravida
-        maecenas lacus sit aliquet volutpat. Vestibulum vulputate mi ultricies
-        vitae nulla sem in ullamcorper. Dictum arcu lectus feugiat sit venenatis.
+      "Mi trabajo diario requiere precisión absoluta en cada plantilla ortopédica que entrego. Trevian ha revolucionado por completo la manera en que genero mis diseños. Con un simple escaneo del pie desde el teléfono, la app analiza la morfología, detecta puntos de presión y sugiere automáticamente la plantilla más adecuada. Lo impresionante es cómo la inteligencia artificial aprende de cada caso: cuanto más la uso, más refinadas se vuelven las recomendaciones de ajuste."
       </p>
       <div className="t-person">
         <div className="t-avatar" />
         <div className="t-id">
-          <div className="t-name">Nachito Núñez</div>
-          <div className="t-role">Diseñador UX/UI</div>
+          <div className="t-name">Dra. Mariana López</div>
+          <div className="t-role">Podóloga</div>
         </div>
       </div>
     </article>
 
     <article className="t-card">
       <p className="t-text">
-        Lorem ipsum dolor sit amet consectetur. Turpis lectus tellus diam
-        molestie aliquam nisl. Egestas volutpat imperdiet tristique duis
-        aliquam ut tortor lobortis. Eleifend aliquam integer massa gravida
-        maecenas lacus sit aliquet volutpat. Vestibulum vulputate mi ultricies
-        vitae nulla sem in ullamcorper. Dictum arcu lectus feugiat sit venenatis.
+      "Como corredora de élite, cada detalle de mi entrenamiento y equipamiento cuenta. Mis pies soportan una enorme carga durante la preparación y las competencias, y cualquier desajuste puede derivar en lesiones. Con Trevian, puedo escanear mis pies directamente desde la app móvil y la inteligencia artificial genera plantillas ortopédicas totalmente personalizadas para mis necesidades específicas. Lo increíble es que no solo corrige mi postura y distribuye la presión correctamente, sino que también me permite hacer ajustes finos según el tipo de entrenamiento o la superficie de carrera."
       </p>
       <div className="t-person">
         <div className="t-avatar" />
         <div className="t-id">
-          <div className="t-name">Nachito Núñez</div>
-          <div className="t-role">Diseñador UX/UI</div>
+          <div className="t-name">Martina Ríos</div>
+          <div className="t-role">Atleta de alto rendimiento</div>
         </div>
       </div>
     </article>
 
     <article className="t-card">
       <p className="t-text">
-        Lorem ipsum dolor sit amet consectetur. Turpis lectus tellus diam
-        molestie aliquam nisl. Egestas volutpat imperdiet tristique duis
-        aliquam ut tortor lobortis. Eleifend aliquam integer massa gravida
-        maecenas lacus sit aliquet volutpat. Vestibulum vulputate mi ultricies
-        vitae nulla sem in ullamcorper. Dictum arcu lectus feugiat sit venenatis.
+      "Como kinesiólogo, siempre busco la manera de ofrecer plantillas ortopédicas totalmente personalizadas para mis pacientes. Antes del uso de Trevian, el proceso era largo: tomar medidas manuales, dibujar el molde, probar varias versiones. Todo eso consumía horas de trabajo. Con Trevian, puedo escanear el pie del paciente directamente con la app móvil y, gracias a la inteligencia artificial, la aplicación genera automáticamente una plantilla ortopédica precisa y lista para ajustar."
       </p>
       <div className="t-person">
         <div className="t-avatar" />
         <div className="t-id">
-          <div className="t-name">Nachito Núñez</div>
-          <div className="t-role">Diseñador UX/UI</div>
+          <div className="t-name">Dr. Juan Pérez</div>
+          <div className="t-role">Kinesiólogo</div>
         </div>
       </div>
     </article>
