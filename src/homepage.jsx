@@ -15,7 +15,7 @@ import perfil4 from "./perfil4.png";
 import perfil5 from "./perfil5.png";
 import perfil6 from "./perfil6.png";
 
-
+const perfiles = [perfil6, perfil4, perfil2, perfil5, perfil1, perfil3];
 
 /* ===== Carrusel 3D ===== */
 function CoverflowCarousel() {
@@ -384,13 +384,17 @@ style={{ backgroundImage: `url(${objetivo})` }}
 </section>
 
 
-        {/* DESARROLLADORES */}
-        <h2 className="lp-h2 center">DESARROLLADORES</h2>
-        <div className="devx-grid">
-  {team.map((m) => (
-    <DevCard key={m.name} {...m} avatar={perfil} />
+<h2 className="lp-h2 center">DESARROLLADORES</h2>
+<div className="devx-grid">
+  {team.map((m, i) => (
+    <DevCard
+      key={m.name}
+      {...m}
+      avatar={perfiles[i % perfiles.length]} // usa módulo por si hay más integrantes que imágenes
+    />
   ))}
 </div>
+
 
 
         {/* CONTACTO */}
