@@ -218,9 +218,8 @@ export default function LandingPage() {
                 zapatilla deportiva personalizada.
               </p>
               <div className="lp-hero-cta">
-                <button className="lp-btn-primary">Empezar</button>
                 <button className="lp-btn-ghost" onClick={() => scrollTo(procesoRef)}>
-                  Ver cómo funciona
+                  VER COMO FUNCIONA
                 </button>
               </div>
             </div>
@@ -255,7 +254,7 @@ style={{ backgroundImage: `url(${objetivo})` }}
 />
 
             <div className="obj-text">
-              <h3 className="obj-kicker">Rendimiento sin lesiones</h3>
+              <h3 className="obj-kicker">RENDIMIENTO SIN LESIONES</h3>
               <p>
                 Democratizar plantillas ortopédicas de alto rendimiento mediante análisis de
                 pisada con IA e impresión 3D, para voleibolistas, tenistas y basquetbolistas.

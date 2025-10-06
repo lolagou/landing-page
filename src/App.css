@@ -88,8 +88,8 @@ a{color:var(--aqua);text-decoration:none}
 }
 .obj-text{display:flex;flex-direction:column;gap:12px}
 .obj-kicker{
-  display:inline-block; background:rgba(109,255,213,.15); color:var(--mint);
-  padding:6px 10px; border-radius:10px; font-size:.95rem; letter-spacing:.05em; margin:0 0 8px;
+  color:var(--mint);
+  border-radius:10px; font-size:.95rem; letter-spacing:.05em; margin:0 0 8px;
 }
 .obj-text p{margin:0 0 8px;opacity:.9}
 
@@ -217,7 +217,7 @@ a{color:var(--aqua);text-decoration:none}
 .f-row{display:grid;gap:6px}
 .f-row span{opacity:.85}
 .f-input{background:transparent;color:var(--ink);border:0;outline:none;padding:8px 2px}
-.f-underline{border-bottom:2px solid rgba(203,255,239,.55)}
+.f-underline{border-bottom:2px solid white}
 .f-underline:focus{border-bottom-color:var(--mint)}
 .contact-actions{margin-top:8px}
 .contact-send{background:var(--mint);color:#00121a;border:0;padding:12px 18px;border-radius:10px;font-weight:800;cursor:pointer}
