@@ -270,7 +270,7 @@ a{color:var(--aqua);text-decoration:none}
 
 
 
-.copyright{margin-top:22px;padding:12px 0;text-align:center;background:#0f0b2a;color:#cfe7ff;font-size:.9rem}
+.copyright{margin-top:22px;padding:12px 0;text-align:center;background:white;color:black;font-size:.9rem}
 
 /* ===== Responsive ===== */
 @media (max-width:1100px){
