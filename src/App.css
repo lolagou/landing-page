@@ -126,6 +126,39 @@ a{color:var(--aqua);text-decoration:none}
 .cf3d-wing.left{left:0; transform:translateY(-50%) rotate(-6deg)}
 .cf3d-wing.right{right:0; transform:translateY(-50%) rotate(6deg)}
 
+.cf3d-media {
+  height: 240px;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cf3d-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 0 0 2px rgba(109, 255, 213, 0.35),
+              0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.lp-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.carousel-img {
+  width: 400px;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+
 /* === ASÍ TRABAJAMOS  === */
 .workcards-grid{
   max-width:1200px;

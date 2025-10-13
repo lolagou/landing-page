@@ -14,6 +14,9 @@ import perfil3 from "./perfil3.png";
 import perfil4 from "./perfil4.png";
 import perfil5 from "./perfil5.png";
 import perfil6 from "./perfil6.png";
+import proceso from "./proceso.png";
+import analiza from "./analiza.png";
+import impresion from "./impresion.png";
 
 const perfiles = [perfil6, perfil4, perfil2, perfil5, perfil1, perfil3];
 
@@ -24,18 +27,22 @@ function CoverflowCarousel() {
       title: "1. PROCESO DE ESCANEO",
       desc:
         "Usá la app para tomar fotos y videos de tus pies desde casa. Guías en pantalla garantizan el ángulo correcto.",
+      img: proceso,
     },
     {
       title: "2. IA QUE TE ANALIZA",
       desc:
         "Nuestros modelos de ML detectan puntos clave, arco plantar y alineación para diseñar una plantilla única para vos.",
+      img: analiza,
     },
     {
       title: "3. IMPRESIÓN 3D",
       desc:
         "Fabricamos tu plantilla e integramos el diseño directamente en una zapatilla deportiva personalizada.",
+      img: impresion,
     },
   ];
+  
 
   const CFG = { spreadX: 360, depthZ: 210, rotateY: 36, scaleStep: 0.08, maxOffset: 2 };
 
@@ -91,7 +98,9 @@ function CoverflowCarousel() {
               <header className="cf3d-title">{s.title}</header>
 
               <div className="cf3d-inner">
-                <div className="cf3d-media" aria-label="media del paso" />
+              <div className="cf3d-media">
+  <img src={s.img} alt={s.title} />
+</div>
                 <p className="cf3d-text">{s.desc}</p>
               </div>
             </article>
