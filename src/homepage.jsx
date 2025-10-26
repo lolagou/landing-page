@@ -20,96 +20,301 @@ import impresion from "./impresion.png";
 
 const perfiles = [perfil6, perfil4, perfil2, perfil5, perfil1, perfil3];
 
-/* ===== Carrusel 3D ===== */
-function CoverflowCarousel() {
-  const slides = [
-    {
-      title: "1. PROCESO DE ESCANEO",
-      desc:
-        "Usá la app para tomar fotos y videos de tus pies desde casa. Guías en pantalla garantizan el ángulo correcto.",
-      img: proceso,
-    },
-    {
-      title: "2. IA QUE TE ANALIZA",
-      desc:
-        "Nuestros modelos de ML detectan puntos clave, arco plantar y alineación para diseñar una plantilla única para vos.",
-      img: analiza,
-    },
-    {
-      title: "3. IMPRESIÓN 3D",
-      desc:
-        "Fabricamos tu plantilla e integramos el diseño directamente en una zapatilla deportiva personalizada.",
-      img: impresion,
-    },
-  ];
-  
-
-  const CFG = { spreadX: 360, depthZ: 210, rotateY: 36, scaleStep: 0.08, maxOffset: 2 };
-
-  const [idx, setIdx] = useState(0);
-  const clamp = (i) => (i + slides.length) % slides.length;
-  const next = () => setIdx((i) => clamp(i + 1));
-
-  const [paused, setPaused] = useState(false);
-  useEffect(() => {
-    if (paused) return;
-    const id = setInterval(next, 4200);
-    return () => clearInterval(id);
-  }, [paused, idx]);
-
-  useEffect(() => {
-    const onKey = (e) => {
-      if (e.key === "ArrowRight") next();
-      if (e.key === "ArrowLeft") setIdx((i) => clamp(i - 1));
+// --- Helpers del hero (botón magnético + marquee + CSS del hero) ---
+function MagneticButton({ children, className = "", ...props }) {
+  const ref = React.useRef(null);
+  const wrapRef = React.useRef(null);
+  React.useEffect(() => {
+    const el = ref.current, wrap = wrapRef.current;
+    if (!el || !wrap) return;
+    const onMove = (e) => {
+      const r = wrap.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
+      const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+      el.style.transform = `translate(${dx * 10}px, ${dy * 10}px)`;
     };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    const reset = () => (el.style.transform = "translate(0,0)");
+    wrap.addEventListener("mousemove", onMove);
+    wrap.addEventListener("mouseleave", reset);
+    return () => {
+      wrap.removeEventListener("mousemove", onMove);
+      wrap.removeEventListener("mouseleave", reset);
+    };
   }, []);
-
   return (
-    <div
-      className="cf3d-wrap no-arrows"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
-      <div className="cf3d-wing left" aria-hidden />
-      <div className="cf3d-wing right" aria-hidden />
+    <span className={`mag-wrap ${className}`} ref={wrapRef}>
+      <button ref={ref} className="btn btn-primary" {...props}>
+        {children}
+      </button>
+    </span>
+  );
+}
 
-      <div className="cf3d-stage" role="region" aria-roledescription="carrusel 3D">
-        {slides.map((s, i) => {
-          let o = i - idx;
-          if (o > CFG.maxOffset) o -= slides.length;
-          if (o < -CFG.maxOffset) o += slides.length;
-
-          const tx = o * CFG.spreadX;
-          const rz = -Math.abs(o) * CFG.depthZ;
-          const ry = -o * CFG.rotateY;    
-          const sc = 1 - Math.abs(o) * CFG.scaleStep;
-
-          return (
-            <article
-              key={s.title}
-              className="cf3d-card"
-              style={{
-                transform: `translateX(${tx}px) translateZ(${rz}px) rotateY(${ry}deg) scale(${sc})`,
-                zIndex: 10 - Math.abs(o),
-              }}
-            >
-              <header className="cf3d-title">{s.title}</header>
-
-              <div className="cf3d-inner">
-              <div className="cf3d-media">
-  <img src={s.img} alt={s.title} />
-</div>
-                <p className="cf3d-text">{s.desc}</p>
-              </div>
-            </article>
-          );
-        })}
+function Marquee({ children, speed = 28 }) {
+  return (
+    <div className="marquee" aria-hidden>
+      <div className="marquee-track" style={{ "--marquee-speed": `${speed}s` }}>
+        <span>{children}</span><span>{children}</span>
+        <span>{children}</span><span>{children}</span>
       </div>
     </div>
   );
 }
+
+const HERO_CSS = `
+.lp-hero-sec{ overflow:visible; }
+.hero{
+  --mx:50%; --my:50%;
+  position:relative; min-height: clamp(520px, 75vh, 820px);
+  display:grid; place-items:center; padding:64px 16px; border-radius:20px;
+  background:
+    radial-gradient(1200px 1200px at var(--mx) var(--my), rgba(109,255,213,.10), transparent 40%),
+    radial-gradient(1200px 1200px at calc(100% - var(--mx)) calc(100% - var(--my)), rgba(203,255,239,.06), transparent 45%),
+    linear-gradient(135deg, #05003F 0%, #02001A 60%, #000014 100%);
+  animation: heroHue 14s ease-in-out infinite alternate;
+  box-shadow: 0 30px 80px rgba(0,0,0,.45) inset, 0 10px 40px rgba(0,0,0,.35);
+  isolation:isolate;
+}
+.hero-center{ text-align:center; max-width:880px; }
+.hero-title{ color:#CBFFEF; font-size: clamp(36px, 6vw, 68px); line-height:1.05; margin:0 0 12px; }
+.hero-sub{ color:rgba(255,255,255,.85); font-size: clamp(16px,2.2vw,20px); margin:0 auto 26px; max-width:56ch; }
+.hero-cta{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+
+.btn{ padding:12px 20px; border-radius:999px; font-weight:700; letter-spacing:.2px; transition:.2s; }
+.btn-primary{ background:linear-gradient(180deg, #6DFFD5 0%, #4BE3BE 100%); color:#02001A; border:none; box-shadow:0 8px 28px rgba(109,255,213,.35), 0 2px 8px rgba(0,0,0,.35); }
+.btn-primary:hover{ transform: translateY(-2px) scale(1.02); }
+.btn-ghost{ background:transparent; color:#CBFFEF; border:1px solid rgba(203,255,239,.45); box-shadow:0 4px 18px rgba(0,0,0,.25) inset; }
+.btn-ghost:hover{ border-color: rgba(109,255,213,.85); color:#6DFFD5; transform: translateY(-1px); }
+.mag-wrap{ display:inline-grid; place-items:center; padding:6px 8px; border-radius:999px; }
+
+/* Línea neón */
+.hero-line{
+  position:absolute; inset:0; width:100%; height:100%;
+  opacity:.85; mix-blend-mode:screen;
+  filter: drop-shadow(0 0 10px rgba(109,255,213,.5));
+}
+.hero-line path{
+  fill:none; stroke:#6DFFD5; stroke-width:6; stroke-linecap:round;
+  stroke-dasharray:1400; stroke-dashoffset:1400;
+  animation: dash 7s cubic-bezier(.22,.61,.36,1) forwards,
+             breathing 4s ease-in-out infinite 7s;
+}
+@keyframes dash { to { stroke-dashoffset:0; } }
+@keyframes breathing {
+  0%,100%{ filter: drop-shadow(0 0 0 rgba(109,255,213,0)); }
+  50%{    filter: drop-shadow(0 0 20px rgba(109,255,213,.65)); }
+}
+@keyframes heroHue {
+  0%{ filter:hue-rotate(0deg) saturate(1); }
+  100%{ filter:hue-rotate(9deg) saturate(1.05); }
+}/* Banda dinámica SIN líneas */
+.ribbon-flat{
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 24px;
+  width: min(1100px, calc(100% - 64px));
+  pointer-events: none;
+}
+
+.ribbon-viewport{
+  overflow: hidden;
+  background: #080724; /* franja oscura */
+  padding: 10px 0;
+}
+
+/* Animación del texto en loop */
+.ribbon-track{
+  display: inline-flex;
+  gap: 64px;
+  white-space: nowrap;
+  will-change: transform;
+  animation: ribbonScroll var(--ribbon-speed, 22s) linear infinite;
+}
+
+@keyframes ribbonScroll {
+  to { transform: translateX(-50%); }
+}
+
+.ribbon-group{
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(20px, 6vw, 64px);
+  padding: 0 16px;
+}
+
+.ribbon-group span{
+  color: #CBFFEF;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-size: clamp(12px, 1.9vw, 14px);
+}
+
+.ribbon-group .sep{
+  color: #6DFFD5;
+  opacity: .95;
+  font-style: normal;
+  font-weight: 900;
+  transform: translateY(-1px);
+  font-size: clamp(14px, 2.2vw, 16px);
+}
+
+/* Opcional: ancho fijo en pantallas grandes */
+@media (min-width: 1280px){
+  .ribbon-flat{ width: 1100px; }
+}
+
+`;
+
+
+function CoverflowCarousel() {
+  const slides = [
+    {
+      title: "ESCANEÁ",
+      desc: "Tomá fotos de tus pies desde casa con guías visuales para el ángulo perfecto.",
+      icon: "📱",
+    },
+    {
+      title: "ANALIZÁ",
+      desc: "Nuestra IA detecta puntos clave y crea una plantilla única para vos.",
+      icon: "🤖",
+    },
+    {
+      title: "IMPRIMÍ",
+      desc: "Fabricamos tu plantilla 3D personalizada y te la enviamos a casa.",
+      icon: "🦶",
+    },
+  ];
+
+  const [idx, setIdx] = React.useState(0);
+  const next = () => setIdx((i) => (i + 1) % slides.length);
+  const prev = () => setIdx((i) => (i - 1 + slides.length) % slides.length);
+
+  React.useEffect(() => {
+    const id = setInterval(next, 4000);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="cf-min">
+      <style>{CSS}</style>
+
+      <div className="cf-bg" />
+
+      <div className="cf-card">
+        <div className="cf-icon">{slides[idx].icon}</div>
+        <h3 className="cf-title">{slides[idx].title}</h3>
+        <p className="cf-desc">{slides[idx].desc}</p>
+      </div>
+
+
+      <div className="cf-dots">
+        {slides.map((_, i) => (
+          <span key={i} className={`dot ${i === idx ? "active" : ""}`} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const CSS = `
+.cf-min {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  border-radius: 20px;
+  overflow: hidden;
+  color: #fff;
+}
+
+/* 🔮 Fondo dinámico tipo Nike */
+.cf-bg {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 40%, rgba(109,255,213,0.2), transparent 60%),
+              linear-gradient(135deg, #05003F 0%, #02001A 50%, #000014 100%);
+  filter: blur(30px);
+  z-index: 0;
+  animation: pulse 8s ease-in-out infinite alternate;
+}
+@keyframes pulse {
+  0% { opacity: 0.8; transform: scale(1);}
+  100% { opacity: 1; transform: scale(1.05);}
+}
+
+/* Card */
+.cf-card {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 40px 30px;
+  max-width: 420px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+  backdrop-filter: blur(12px);
+  transition: all 0.4s ease;
+}
+.cf-icon {
+  font-size: 48px;
+  margin-bottom: 10px;
+}
+.cf-title {
+  font-size: 22px;
+  color: #6DFFD5;
+  margin-bottom: 8px;
+}
+.cf-desc {
+  color: rgba(255,255,255,0.8);
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+/* Arrows */
+.cf-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #CBFFEF;
+  font-size: 28px;
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+.cf-arrow:hover { background: rgba(109,255,213,0.2); color: #6DFFD5; }
+.cf-arrow.left { left: 10%; }
+.cf-arrow.right { right: 10%; }
+
+/* Dots */
+.cf-dots {
+  display: flex;
+  gap: 8px;
+  margin-top: 18px;
+  z-index: 2;
+}
+.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.3);
+  transition: all 0.3s ease;
+}
+.dot.active {
+  width: 24px;
+  border-radius: 12px;
+  background: #6DFFD5;
+}
+`;
+
 
 /* ===== Desarrollador ===== */
 function DevCard({ name, role, linkedin, avatar = perfil }) {
@@ -213,42 +418,60 @@ export default function LandingPage() {
       </header>
 
       <main className="lp-main">
-        {/* HERO */}
-        <section ref={heroRef} className="lp-section lp-hero-sec">
-          <div
-            ref={heroBgRef}
-            className="lp-hero fancy-hero"
-            onMouseMove={handleHeroMove}
-          >
-            <div className="lp-hero-center">
-              <h1 className="lp-hero-title">TU PLANTILLA ORTOPEDICA, A MEDIDA</h1>
-              <p className="lp-hero-sub">
-                Escaneá desde tu casa, nuestra IA diseña tu plantilla 3D y la integramos en una
-                zapatilla deportiva personalizada.
-              </p>
-              <div className="lp-hero-cta">
-                <button className="lp-btn-ghost" onClick={() => scrollTo(procesoRef)}>
-                  VER COMO FUNCIONA
-                </button>
-              </div>
-            </div>
+        {/* HERO (nuevo) */}
+<section ref={heroRef} className="lp-section lp-hero-sec">
+  {/* CSS del hero scoped */}
+  <style>{HERO_CSS}</style>
 
-            {showRibbon && (
-              <div className="ribbon">
-                <div className="ribbon-track">
-                  <span>MÁS RÁPIDO</span><span className="sep">~</span>
-                  <span>MÁS FÁCIL</span><span className="sep">~</span>
-                  <span>¡SIN SALIR DE TU CASA!</span><span className="sep">~</span>
-                  <span>TE LLEGA A TU CASA</span>
-                  <span>MÁS RÁPIDO</span><span className="sep">~</span>
-                  <span>MÁS FÁCIL</span><span className="sep">~</span>
-                  <span>¡SIN SALIR DE TU CASA!</span><span className="sep">~</span>
-                  <span>TE LLEGA A TU CASA</span>
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
+  <div
+    ref={heroBgRef}
+    className="hero"
+    onMouseMove={handleHeroMove}
+  >
+    {/* línea neon */}
+    <svg className="hero-line" viewBox="0 0 1200 600" preserveAspectRatio="none" aria-hidden>
+      <path d="M0,220 C160,160 280,320 420,260 S720,140 860,220 1060,320 1200,260" />
+    </svg>
+
+    {/* centro */}
+    <div className="hero-center">
+      <h1 className="hero-title">TU PLANTILLA ORTOPÉDICA, A MEDIDA</h1>
+      <p className="hero-sub">
+        Escaneá desde tu casa, nuestra IA diseña tu plantilla 3D y la integramos en una
+        zapatilla deportiva personalizada.
+      </p>
+    </div>
+
+    {/* marquee inferior (opcional, podés borrarlo si no lo querés) */}
+    {/* reemplazo de la banda */}
+    {showRibbon && (
+  <div className="ribbon-flat" aria-hidden>
+    <div className="ribbon-viewport">
+      <div className="ribbon-track" style={{ "--ribbon-speed": "22s" }}>
+        {/* grupo 1 */}
+        <div className="ribbon-group">
+          <span>MÁS RÁPIDO</span><i className="sep">~</i>
+          <span>MÁS FÁCIL</span><i className="sep">~</i>
+          <span>¡SIN SALIR DE TU CASA!</span><i className="sep">~</i>
+          <span>TE LLEGA A TU CASA</span>
+        </div>
+        {/* grupo 2 (idéntico, para loop continuo) */}
+        <div className="ribbon-group" aria-hidden>
+          <span>MÁS RÁPIDO</span><i className="sep">~</i>
+          <span>MÁS FÁCIL</span><i className="sep">~</i>
+          <span>¡SIN SALIR DE TU CASA!</span><i className="sep">~</i>
+          <span>TE LLEGA A TU CASA</span>
+        </div>
+    </div>
+    </div>
+  </div>
+)}
+
+
+
+  </div>
+</section>
+
 
         {/* NUESTRO OBJETIVO */}
         <section ref={objetivoRef} className="lp-section lp-pad objetivo-grid">
@@ -340,7 +563,7 @@ style={{ backgroundImage: `url(${objetivo})` }}
 
     <article className="t-card">
       <p className="t-text">
-      "Mi trabajo diario requiere precisión absoluta en cada plantilla ortopédica que entrego. Trevian ha revolucionado por completo la manera en que genero mis diseños. Con un simple escaneo del pie desde el teléfono, la app analiza la morfología, detecta puntos de presión y sugiere automáticamente la plantilla más adecuada. Lo impresionante es cómo la inteligencia artificial aprende de cada caso: cuanto más la uso, más refinadas se vuelven las recomendaciones de ajuste."
+      "Mi trabajo diario requiere precisión absoluta en cada plantilla ortopédica que entrego. Trevian ha revolucionado por completo la manera en que genero mis diseños. Con un simple escaneo del pie desde el teléfono, la app analiza la morfología, detecta puntos de presión y sugiere automáticamente la plantilla más adecuada."
       </p>
       <div className="t-person">
         <div className="t-avatar" />
@@ -353,7 +576,7 @@ style={{ backgroundImage: `url(${objetivo})` }}
 
     <article className="t-card">
       <p className="t-text">
-      "Como corredora de élite, cada detalle de mi entrenamiento y equipamiento cuenta. Mis pies soportan una enorme carga durante la preparación y las competencias, y cualquier desajuste puede derivar en lesiones. Con Trevian, puedo escanear mis pies directamente desde la app móvil y la inteligencia artificial genera plantillas ortopédicas totalmente personalizadas para mis necesidades específicas. Lo increíble es que no solo corrige mi postura y distribuye la presión correctamente, sino que también me permite hacer ajustes finos según el tipo de entrenamiento o la superficie de carrera."
+      "Como corredora de élite, cada detalle de mi entrenamiento y equipamiento cuenta. Mis pies soportan una enorme carga durante la preparación y las competencias. Con Trevian, puedo escanear mis pies directamente desde la app móvil y la inteligencia artificial genera plantillas ortopédicas totalmente personalizadas para mis necesidades específicas."
       </p>
       <div className="t-person">
         <div className="t-avatar" />
@@ -366,7 +589,7 @@ style={{ backgroundImage: `url(${objetivo})` }}
 
     <article className="t-card">
       <p className="t-text">
-      "Como kinesiólogo, siempre busco la manera de ofrecer plantillas ortopédicas totalmente personalizadas para mis pacientes. Antes del uso de Trevian, el proceso era largo: tomar medidas manuales, dibujar el molde, probar varias versiones. Todo eso consumía horas de trabajo. Con Trevian, puedo escanear el pie del paciente directamente con la app móvil y, gracias a la inteligencia artificial, la aplicación genera automáticamente una plantilla ortopédica precisa y lista para ajustar."
+      "Como kinesiólogo, siempre busco la manera de ofrecer plantillas ortopédicas totalmente personalizadas para mis pacientes. Con Trevian, puedo escanear el pie del paciente directamente con la app móvil y, gracias a la inteligencia artificial, la aplicación genera automáticamente una plantilla ortopédica precisa"
       </p>
       <div className="t-person">
         <div className="t-avatar" />

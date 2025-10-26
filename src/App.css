@@ -161,11 +161,9 @@ a{color:var(--aqua);text-decoration:none}
 
 /* === ASÍ TRABAJAMOS  === */
 .workcards-grid{
-  max-width:1200px;
-  margin:16px auto 0;
   display:grid;
   grid-template-columns: repeat(3, 1fr);
-  gap:28px;
+  gap:14px;
 }
 
 .workcard{
@@ -334,7 +332,7 @@ a{color:var(--aqua);text-decoration:none}
   display:grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 36px;
-  padding-bottom: 48px; 
+  padding-bottom: 38px; 
 }
 
 .t-glow{
